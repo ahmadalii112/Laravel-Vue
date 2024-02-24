@@ -12,7 +12,7 @@
     </head>
     <body>
         <div id="app">
-            <counter />
+            <app />
         </div>
     </body>
 </html>
