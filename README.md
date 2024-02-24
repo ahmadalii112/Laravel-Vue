@@ -11,6 +11,7 @@
 
 - [Laravel +  Vue using Vite instruction](https://benjamincrozat.com/laravel-vue)
 - [Youtube Tutorial](https://www.youtube.com/watch?v=Su8dWVrHdkc&ab_channel=CodeWithTony)
+- [LinkedIn Guide](https://www.linkedin.com/pulse/how-install-vue-3-laravel-10-vite-mahmoud-adel/)
 
 ```bash
 laravel new Laravel-Vue
