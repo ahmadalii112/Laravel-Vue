@@ -1,9 +1,14 @@
 <script>
+import BaseModal from "../BaseModal.vue";
+import {DialogTitle} from "@headlessui/vue";
 export default {
+  components: {DialogTitle, BaseModal},
   name: "list",
   data() {
     return {
       users: [],
+      selectedUser: null,
+      showModal: false
     }
   },
   mounted() {
@@ -18,12 +23,24 @@ export default {
         this.users = []
       })
     },
-    deleteUser(id) {
-      this.axios.delete('/api/users/' + id).then(response => {
-        this.getUsers()
-      }).catch(error => {
-        console.log(error)
-      })
+    deleteUser() {
+      if (this.selectedUser) {
+        this.axios.delete('/api/users/' + this.selectedUser.id).then(response => {
+          this.getUsers();
+          this.closeModal();
+        }).catch(error => {
+          console.log(error)
+          this.closeModal();
+        })
+      }
+    },
+    openModal(user) {
+      this.selectedUser = user;
+      this.showModal = true;
+    },
+    closeModal() {
+      this.selectedUser = null;
+      this.showModal = false;
     }
   }
 }
@@ -63,7 +80,8 @@ export default {
               </td>
               <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ user.email }}</td>
               <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
-                <a @click="deleteUser(user.id)" class="text-indigo-600 hover:text-indigo-900">Delete<span
+                <a  @click="openModal(user)"
+                    class="text-indigo-600 hover:text-indigo-900">Delete<span
                   class="sr-only">Delete</span></a>
               </td>
             </tr>
@@ -73,7 +91,23 @@ export default {
       </div>
     </div>
   </div>
-
+  <BaseModal :isOpen="showModal" @close="closeModal" @closeModal="closeModal">
+    <template v-slot:content>
+      <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
+        <DialogTitle as="h3" class="text-base font-semibold leading-6 text-gray-900">Delete User</DialogTitle>
+        <div class="mt-2">
+          <p class="text-sm text-gray-500">Are you sure you want to Delete this user "{{ selectedUser ? selectedUser.name : '' }}"?.</p>
+        </div>
+      </div>
+    </template>
+    <template v-slot:actions>
+      <button type="button"
+              @click="deleteUser"
+              class="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
+      >Delete
+      </button>
+    </template>
+  </BaseModal>
 </template>
 
 <style scoped>
